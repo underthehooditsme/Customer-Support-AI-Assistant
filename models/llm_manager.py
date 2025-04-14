@@ -103,7 +103,6 @@ class LLMManager:
     
             tokenizer = transformers.AutoTokenizer.from_pretrained(model_name)
     
-            # Text generation pipeline
             pipeline = transformers.pipeline(
                 "text-generation",
                 model=model,
@@ -194,7 +193,6 @@ class LLMManager:
                 "general response but be honest about what you don't know."
             )
     
-        # Construct chat-style message format
         messages = [{"role": "system", "content": system_prompt}]
         
         if context:
@@ -205,12 +203,10 @@ class LLMManager:
             
         messages.append({"role": "user", "content": query})
     
-        # Invoke the LLM
         if self.model_type == "groq":
             response = self.llm.invoke(messages)
             response_text = response.content
         else:
-            # Assuming local model accepts chat-like message structure
             response = self.llm.invoke(messages)
             response_text = response.content if hasattr(response, "content") else response
     
