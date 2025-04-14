@@ -8,7 +8,6 @@ from pydantic import BaseModel, Field
 import uvicorn
 import json
 
-# Import from our modules
 from config import CONFIG
 from models.embeddings import EmbeddingManager
 from models.llm_manager import LLMManager
@@ -17,12 +16,10 @@ from database.db_manager import DatabaseManager
 from utils.explainability import ExplainabilityTool
 from utils.logging_utils import setup_logging
 
-# Set up logging
 logger = setup_logging(__name__)
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
-# Initialize the FastAPI app
 app = FastAPI(
     title="Customer Support AI Assistant",
     description="AI-powered customer support assistant using RAG",
@@ -106,28 +103,19 @@ async def startup_event():
         db_manager = DatabaseManager(CONFIG.DB_PATH)
         logger.info("Database manager initialized")
         
-        # Initialize embedding manager
-        # embedding_manager = EmbeddingManager(
-        #     model_name=CONFIG.EMBEDDING_MODEL,
-        #     vector_db_path=CONFIG.VECTOR_DB_PATH
-        # )
+
         embedding_manager = EmbeddingManager()
         logger.info("Embedding manager initialized")
         embedding_manager.vector_store = embedding_manager.load_vector_store() # using default faiss
         
-        # Initialize LLM manager
-        # llm_manager = LLMManager(
-        #     default_model=CONFIG.DEFAULT_LLM_MODEL,
-        #     default_provider=CONFIG.DEFAULT_LLM_PROVIDER
-        # )
+
         llm_manager = LLMManager()
         logger.info("LLM manager initialized")
         
-        # Initialize explainability tool
+
         explainability_tool = ExplainabilityTool()
         logger.info("Explainability tool initialized")
         
-        # Initialize RAG pipeline
         rag_pipeline = RAGPipeline(
             embedding_manager=embedding_manager,
             llm_manager=llm_manager,
@@ -189,7 +177,6 @@ async def generate_response(
             conversation_id=request.conversation_id
         )
         
-        # Log the interaction asynchronously
         background_tasks.add_task(
             log_interaction,
             query=request.query,
@@ -387,7 +374,6 @@ def log_interaction(
     logger.info(f"Logging interaction for query: {query[:50]}...")
     
     try:
-        # Prepare interaction data
         interaction_data = {
             "query": query,
             "response": response,
